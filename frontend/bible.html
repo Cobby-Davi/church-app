@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible - In Him Is Life Church International</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .home-container { width: 350px; text-align: left; }
+    .back-link { display: block; margin-bottom: 15px; font-size: 13px; }
+    .bible-controls { display: flex; gap: 5px; margin-bottom: 15px; }
+    .bible-controls select, .bible-controls input {
+      padding: 6px; font-size: 13px; border: 1px solid #ccc; border-radius: 5px;
+    }
+    .bible-controls button {
+      width: auto; padding: 6px 10px; font-size: 13px;
+    }
+    #verseDisplay { font-size: 14px; line-height: 1.6; }
+    #verseDisplay sup { font-weight: bold; color: #2c3e50; margin-right: 3px; }
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 15px; }
+    .nav-buttons button { width: 48%; padding: 8px; }
+    .search-box { display: flex; gap: 5px; margin-bottom: 15px; }
+    .search-box input { flex: 1; padding: 6px; font-size: 13px; }
+    .search-box button { width: auto; padding: 6px 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="register-container home-container">
+    <a class="back-link" href="home.html">&larr; Back to Home</a>
+    <h1 style="text-align:center; font-size:18px;">Bible</h1>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="e.g. John 3:16">
+      <button id="searchBtn">Go</button>
+    </div>
+
+    <div class="bible-controls">
+      <select id="bookSelect"></select>
+      <input type="number" id="chapterInput" min="1" value="1" style="width:60px;">
+      <button id="loadBtn">Load</button>
+    </div>
+
+    <div id="verseDisplay">Select a book and chapter to begin.</div>
+
+    <div class="nav-buttons">
+      <button id="prevBtn">&larr; Previous Chapter</button>
+      <button id="nextBtn">Next Chapter &rarr;</button>
+    </div>
+  </div>
+
+  <script src="bible.js"></script>
+</body>
+</html>

@@ -48,9 +48,24 @@
 
       <button type="submit">Post</button>
     </form>
+
     <p id="statusMessage"></p>
   </div>
+    <hr style="margin:20px 0;">
 
+    <h2 style="font-size:16px;">Post a Sermon</h2>
+    <form id="sermonForm">
+      <label for="sermonTitle">Title</label>
+      <input type="text" id="sermonTitle" required placeholder="e.g. Walking in Faith">
+
+      <label for="sermonSpeaker">Speaker</label>
+      <input type="text" id="sermonSpeaker" required placeholder="e.g. Pastor John">
+
+      <label for="sermonNotes">Notes</label>
+      <input type="text" id="sermonNotes" required placeholder="Short summary or notes">
+
+      <button type="submit">Post Sermon</button>
+    </form>
   <script src="admin.js"></script>
 </body>
 </html>
