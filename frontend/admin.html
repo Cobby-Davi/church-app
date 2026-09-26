@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - In Him Is Life Church International</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-container {
+      width: 500px;
+    }
+    .member-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .member-info {
+      font-size: 14px;
+    }
+    .member-actions button {
+      margin-left: 5px;
+      padding: 6px 10px;
+      font-size: 12px;
+      width: auto;
+    }
+    .approve-btn { background-color: #27ae60; }
+    .reject-btn { background-color: #c0392b; }
+  </style>
+</head>
+<body>
+
+  <div class="register-container admin-container">
+    <h1>Admin Dashboard</h1>
+    <p class="subtitle">Pending Member Approvals</p>
+
+    <div id="pendingList"></div>
+
+    <p id="statusMessage"></p>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
