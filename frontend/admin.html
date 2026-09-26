@@ -36,7 +36,18 @@
     <p class="subtitle">Pending Member Approvals</p>
 
     <div id="pendingList"></div>
+    <hr style="margin:20px 0;">
 
+    <h2 style="font-size:16px;">Post an Announcement</h2>
+    <form id="announcementForm">
+      <label for="annTitle">Title</label>
+      <input type="text" id="annTitle" required placeholder="e.g. Sunday Service Update">
+
+      <label for="annMessage">Message</label>
+      <input type="text" id="annMessage" required placeholder="Write your announcement">
+
+      <button type="submit">Post</button>
+    </form>
     <p id="statusMessage"></p>
   </div>
 

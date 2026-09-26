@@ -46,3 +46,22 @@ function updateStatus(phone, newStatus) {
 }
 
 loadPendingMembers();
+document.getElementById('announcementForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const title = document.getElementById('annTitle').value.trim();
+  const message = document.getElementById('annMessage').value.trim();
+
+  if (title === '' || message === '') return;
+
+  const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
+  announcements.push({
+    title: title,
+    message: message,
+    date: new Date().toLocaleDateString()
+  });
+  localStorage.setItem('announcements', JSON.stringify(announcements));
+
+  document.getElementById('annTitle').value = '';
+  document.getElementById('annMessage').value = '';
+});

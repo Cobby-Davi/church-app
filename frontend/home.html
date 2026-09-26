@@ -5,20 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home - In Him Is Life Church International</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .home-container { width: 350px; text-align: left; }
+    .announcement {
+      background: #f9f9f9;
+      border-left: 4px solid #2c3e50;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+    .announcement h3 { margin: 0 0 5px 0; font-size: 15px; }
+    .announcement p { margin: 0; font-size: 13px; color: #444; }
+    .announcement .date { font-size: 11px; color: #999; margin-top: 5px; }
+  </style>
 </head>
 <body>
 
-  <div class="register-container">
-    <h1>Welcome!</h1>
-    <p class="subtitle" id="welcomeMessage">Loading...</p>
+  <div class="register-container home-container">
+    <h1 style="text-align:center;">In Him Is Life Church International</h1>
+    <p class="subtitle" id="welcomeMessage" style="text-align:center;">Loading...</p>
+
+    <h2 style="font-size:16px; margin-top:20px;">Announcements & Updates</h2>
+    <div id="announcementsList"></div>
   </div>
 
-  <script>
-    const currentMember = JSON.parse(localStorage.getItem('currentMember'));
-    if (currentMember) {
-      document.getElementById('welcomeMessage').textContent = 'Hello, ' + currentMember.name + '!';
-    }
-  </script>
-
+  <script src="home.js"></script>
 </body>
 </html>
