@@ -87,3 +87,19 @@ document.getElementById('sermonForm').addEventListener('submit', function(e) {
   document.getElementById('sermonSpeaker').value = '';
   document.getElementById('sermonNotes').value = '';
 });
+document.getElementById('devotionForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const date = document.getElementById('devDate').value;
+  const reference = document.getElementById('devRef').value.trim();
+
+  if (date === '' || reference === '') return;
+
+  let devotions = JSON.parse(localStorage.getItem('devotions')) || [];
+  devotions = devotions.filter(d => d.date !== date); // replace if same date already scheduled
+  devotions.push({ date: date, reference: reference });
+  localStorage.setItem('devotions', JSON.stringify(devotions));
+
+  document.getElementById('devDate').value = '';
+  document.getElementById('devRef').value = '';
+});
