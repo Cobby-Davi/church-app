@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prayer Wall - In Him Is Life Church International</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .home-container { width: 350px; text-align: left; }
+    .back-link { display: block; margin-bottom: 15px; font-size: 13px; }
+    .prayer-card {
+      background: #f9f9f9;
+      border-left: 4px solid #2c3e50;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .prayer-card .meta { font-size: 11px; color: #999; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+  <div class="register-container home-container">
+    <a class="back-link" href="home.html">&larr; Back to Home</a>
+    <h1 style="text-align:center; font-size:18px;">Prayer Wall</h1>
+
+    <form id="prayerForm">
+      <label for="prayerText">Submit a Prayer Request</label>
+      <input type="text" id="prayerText" required placeholder="Share what's on your heart">
+      <button type="submit">Submit</button>
+    </form>
+
+    <hr style="margin:20px 0;">
+
+    <div id="prayerList"></div>
+  </div>
+
+  <script src="prayer.js"></script>
+</body>
+</html>
