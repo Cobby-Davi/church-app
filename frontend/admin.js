@@ -1,3 +1,6 @@
+if (sessionStorage.getItem('isAdmin') !== 'true') {
+  window.location.href = 'adminLogin.html';
+}
 function loadPendingMembers() {
   const members = JSON.parse(localStorage.getItem('members')) || [];
   const pendingList = document.getElementById('pendingList');
