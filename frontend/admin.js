@@ -106,3 +106,107 @@ document.getElementById('devotionForm').addEventListener('submit', function(e) {
   document.getElementById('devDate').value = '';
   document.getElementById('devRef').value = '';
 });
+// ----- Mark Attendance -----
+document.getElementById('attendanceDate').valueAsDate = new Date();
+
+function renderMemberChecklist() {
+  const members = JSON.parse(localStorage.getItem('members')) || [];
+  const active = members.filter(m => m.status === 'Active');
+  const checklist = document.getElementById('memberChecklist');
+
+  const date = document.getElementById('attendanceDate').value;
+  const records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+  const existing = records.find(r => r.date === date);
+  const presentPhones = existing ? existing.present : [];
+
+  if (active.length === 0) {
+    checklist.innerHTML = '<p>No active members yet.</p>';
+    return;
+  }
+
+  checklist.innerHTML = active.map(m => `
+    <label style="display:block; margin-top:4px;">
+      <input type="checkbox" class="attendCheck" value="${m.phone}" ${presentPhones.includes(m.phone) ? 'checked' : ''}>
+      ${m.name} (${m.phone})
+    </label>
+  `).join('');
+}
+
+document.getElementById('attendanceDate').addEventListener('change', renderMemberChecklist);
+renderMemberChecklist();
+
+document.getElementById('saveAttendanceBtn').addEventListener('click', function() {
+  const date = document.getElementById('attendanceDate').value;
+  const checked = Array.from(document.querySelectorAll('.attendCheck:checked')).map(c => c.value);
+
+  let records = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+  records = records.filter(r => r.date !== date);
+  records.push({ date: date, present: checked });
+  localStorage.setItem('attendanceRecords', JSON.stringify(records));
+
+  alert('Attendance saved for ' + date);
+});
+
+// ----- Add Member Manually -----
+document.getElementById('addMemberForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('newName').value.trim();
+  const phone = document.getElementById('newPhone').value.trim();
+  const password = document.getElementById('newPassword').value;
+
+  if (!name || !phone || !password) return;
+
+  let members = JSON.parse(localStorage.getItem('members')) || [];
+
+  if (members.find(m => m.phone === phone)) {
+    alert('A member with that phone number already exists.');
+    return;
+  }
+
+  members.push({ name, phone, password, status: 'Active' });
+  localStorage.setItem('members', JSON.stringify(members));
+
+  document.getElementById('newName').value = '';
+  document.getElementById('newPhone').value = '';
+  document.getElementById('newPassword').value = '';
+
+  renderAllMembers();
+  renderMemberChecklist();
+});
+
+// ----- All Members List (with Remove option) -----
+function renderAllMembers() {
+  const members = JSON.parse(localStorage.getItem('members')) || [];
+  const list = document.getElementById('allMembersList');
+
+  if (members.length === 0) {
+    list.innerHTML = '<p style="font-size:13px; color:#666;">No members yet.</p>';
+    return;
+  }
+
+  list.innerHTML = members.map(m => `
+    <div class="member-row">
+      <div class="member-info">
+        <strong>${m.name}</strong> (${m.status})<br>
+        ${m.phone}
+      </div>
+      <div class="member-actions">
+        <button class="reject-btn remove-member-btn" data-phone="${m.phone}">Remove</button>
+      </div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.remove-member-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!confirm('Remove this member completely?')) return;
+      let members = JSON.parse(localStorage.getItem('members')) || [];
+      members = members.filter(m => m.phone !== btn.dataset.phone);
+      localStorage.setItem('members', JSON.stringify(members));
+      renderAllMembers();
+      renderMemberChecklist();
+    });
+  });
+}
+
+renderAllMembers();

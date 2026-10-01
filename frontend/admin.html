@@ -78,6 +78,36 @@
 
       <button type="submit">Schedule</button>
     </form> 
+        <hr style="margin:20px 0;">
+
+    <h2 style="font-size:16px;">Mark Attendance</h2>
+    <label for="attendanceDate">Service Date</label>
+    <input type="date" id="attendanceDate">
+
+    <div id="memberChecklist" style="margin-top:10px; font-size:13px;"></div>
+
+    <button id="saveAttendanceBtn" style="margin-top:10px;">Save Attendance</button>
+
+    <hr style="margin:20px 0;">
+
+    <h2 style="font-size:16px;">Add Member Manually</h2>
+    <form id="addMemberForm">
+      <label for="newName">Full Name</label>
+      <input type="text" id="newName" required>
+
+      <label for="newPhone">Phone Number</label>
+      <input type="tel" id="newPhone" required>
+
+      <label for="newPassword">Password</label>
+      <input type="text" id="newPassword" required>
+
+      <button type="submit">Add as Active Member</button>
+    </form>
+
+    <hr style="margin:20px 0;">
+
+    <h2 style="font-size:16px;">All Members</h2>
+    <div id="allMembersList"></div>
   <script src="admin.js"></script>
 </body>
 </html>
