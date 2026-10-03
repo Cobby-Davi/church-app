@@ -1,6 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 // Admin login check
 if (sessionStorage.getItem('isAdmin') !== 'true') {
   window.location.href = 'adminLogin.html';
@@ -60,3 +59,21 @@ async function updateStatus(id, newStatus) {
 }
 
 loadPendingMembers();
+document.getElementById('announcementForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const title = document.getElementById('annTitle').value.trim();
+  const message = document.getElementById('annMessage').value.trim();
+
+  if (title === '' || message === '') return;
+
+  await addDoc(collection(db, "announcements"), {
+    title: title,
+    message: message,
+    date: new Date().toLocaleDateString(),
+    createdAt: serverTimestamp()
+  });
+
+  document.getElementById('annTitle').value = '';
+  document.getElementById('annMessage').value = '';
+});
