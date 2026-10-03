@@ -1,19 +1,24 @@
-document.getElementById('payButton').addEventListener('click', function() {
+import { db } from './firebase-config.js';
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+document.getElementById('payButton').addEventListener('click', async function() {
   let currentMember = JSON.parse(localStorage.getItem('currentMember'));
 
-  if (!currentMember) {
+  if (!currentMember || !currentMember.id) {
     document.getElementById('statusMessage').textContent = 'No registration found. Please register again.';
     return;
   }
 
-  // Simulate a successful payment
-  currentMember.status = 'Pending Approval';
+  try {
+    const memberRef = doc(db, "members", currentMember.id);
+    await updateDoc(memberRef, { status: "Pending Approval" });
 
-  // Update this member in the main members list too
-  let members = JSON.parse(localStorage.getItem('members')) || [];
-  members = members.map(m => m.phone === currentMember.phone ? currentMember : m);
-  localStorage.setItem('members', JSON.stringify(members));
-  localStorage.setItem('currentMember', JSON.stringify(currentMember));
+    currentMember.status = "Pending Approval";
+    localStorage.setItem('currentMember', JSON.stringify(currentMember));
 
-  window.location.href = 'pending.html';
+    window.location.href = 'pending.html';
+  } catch (err) {
+    console.error(err);
+    document.getElementById('statusMessage').textContent = 'Something went wrong. Please try again.';
+  }
 });
