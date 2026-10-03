@@ -36,6 +36,7 @@
     <p class="subtitle">Pending Member Approvals</p>
 
     <div id="pendingList"></div>
+
     <hr style="margin:20px 0;">
 
     <h2 style="font-size:16px;">Post an Announcement</h2>
@@ -49,8 +50,6 @@
       <button type="submit">Post</button>
     </form>
 
-    <p id="statusMessage"></p>
-  </div>
     <hr style="margin:20px 0;">
 
     <h2 style="font-size:16px;">Post a Sermon</h2>
@@ -66,7 +65,8 @@
 
       <button type="submit">Post Sermon</button>
     </form>
-        <hr style="margin:20px 0;">
+
+    <hr style="margin:20px 0;">
 
     <h2 style="font-size:16px;">Schedule a Devotion</h2>
     <form id="devotionForm">
@@ -77,8 +77,9 @@
       <input type="text" id="devRef" required autocomplete="off" placeholder="e.g. Psalm 23:1 or John 3:16">
 
       <button type="submit">Schedule</button>
-    </form> 
-        <hr style="margin:20px 0;">
+    </form>
+
+    <hr style="margin:20px 0;">
 
     <h2 style="font-size:16px;">Mark Attendance</h2>
     <label for="attendanceDate">Service Date</label>
@@ -100,7 +101,7 @@
 
       <label for="newPassword">Password</label>
       <input type="text" id="newPassword" required>
-<input type="password" id="password" name="password" required autocomplete="new-password" placeholder="Create a password">
+
       <button type="submit">Add as Active Member</button>
     </form>
 
@@ -108,7 +109,8 @@
 
     <h2 style="font-size:16px;">All Members</h2>
     <div id="allMembersList"></div>
-        <hr style="margin:20px 0;">
+
+    <hr style="margin:20px 0;">
 
     <h2 style="font-size:16px;">Update Live Stream Links</h2>
     <form id="liveLinksForm">
@@ -120,6 +122,10 @@
 
       <button type="submit">Save Links</button>
     </form>
-<script type="module" src="admin.js"></script>
+
+    <p id="statusMessage"></p>
+  </div>
+
+  <script type="module" src="admin.js"></script>
 </body>
 </html>

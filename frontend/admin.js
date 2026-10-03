@@ -77,3 +77,24 @@ document.getElementById('announcementForm').addEventListener('submit', async fun
   document.getElementById('annTitle').value = '';
   document.getElementById('annMessage').value = '';
 });
+document.getElementById('sermonForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const title = document.getElementById('sermonTitle').value.trim();
+  const speaker = document.getElementById('sermonSpeaker').value.trim();
+  const notes = document.getElementById('sermonNotes').value.trim();
+
+  if (title === '' || speaker === '' || notes === '') return;
+
+  await addDoc(collection(db, "sermons"), {
+    title: title,
+    speaker: speaker,
+    notes: notes,
+    date: new Date().toLocaleDateString(),
+    createdAt: serverTimestamp()
+  });
+
+  document.getElementById('sermonTitle').value = '';
+  document.getElementById('sermonSpeaker').value = '';
+  document.getElementById('sermonNotes').value = '';
+});
