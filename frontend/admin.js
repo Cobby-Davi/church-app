@@ -210,3 +210,17 @@ function renderAllMembers() {
 }
 
 renderAllMembers();
+// Load existing links into the form
+const existingLinks = JSON.parse(localStorage.getItem('liveLinks')) || {};
+document.getElementById('facebookLink').value = existingLinks.facebook || '';
+document.getElementById('zoomLink').value = existingLinks.zoom || '';
+
+document.getElementById('liveLinksForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const facebook = document.getElementById('facebookLink').value.trim();
+  const zoom = document.getElementById('zoomLink').value.trim();
+
+  localStorage.setItem('liveLinks', JSON.stringify({ facebook, zoom }));
+  alert('Live links updated.');
+});

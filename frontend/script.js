@@ -1,5 +1,8 @@
-document.getElementById('registerForm').addEventListener('submit', function(e) {
-  e.preventDefault(); // stop the page from refreshing
+import { db } from './firebase-config.js';
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
   const name = document.getElementById('name').value.trim();
   const phone = document.getElementById('phone').value.trim();
@@ -7,7 +10,6 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
 
   const statusMessage = document.getElementById('statusMessage');
 
-  // Basic validation
   if (name === '' || phone === '' || password === '') {
     statusMessage.textContent = 'Please fill in all fields.';
     return;
@@ -18,22 +20,26 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     return;
   }
 
-  // Create the member record
-  const newMember = {
-    name: name,
-    phone: phone,
-    password: password, // NOTE: plain text for now — real backend will hash this properly later
-    status: 'Unpaid'
-  };
+  statusMessage.textContent = 'Registering...';
 
-  // Save into a list of members in localStorage
-  let members = JSON.parse(localStorage.getItem('members')) || [];
-  members.push(newMember);
-  localStorage.setItem('members', JSON.stringify(members));
+  try {
+    const docRef = await addDoc(collection(db, "members"), {
+      name: name,
+      phone: phone,
+      password: password, // NOTE: plain text for now, will secure properly later
+      status: "Unpaid",
+      createdAt: new Date().toISOString()
+    });
 
-  // Remember who just registered, so the next pages know who we're talking about
-  localStorage.setItem('currentMember', JSON.stringify(newMember));
+    // Remember who just registered, for the next pages
+    localStorage.setItem('currentMember', JSON.stringify({
+      id: docRef.id,
+      name, phone, password, status: "Unpaid"
+    }));
 
-  // Move to the payment step
-  window.location.href = 'payment.html';
+    window.location.href = 'payment.html';
+  } catch (err) {
+    console.error(err);
+    statusMessage.textContent = 'Something went wrong. Please try again.';
+  }
 });
