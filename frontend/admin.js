@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 // Admin login check
 if (sessionStorage.getItem('isAdmin') !== 'true') {
   window.location.href = 'adminLogin.html';
@@ -97,4 +97,24 @@ document.getElementById('sermonForm').addEventListener('submit', async function(
   document.getElementById('sermonTitle').value = '';
   document.getElementById('sermonSpeaker').value = '';
   document.getElementById('sermonNotes').value = '';
+});
+document.getElementById('devotionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const date = document.getElementById('devDate').value;
+  const reference = document.getElementById('devRef').value.trim();
+
+  if (date === '' || reference === '') return;
+
+  // Remove any existing devotion for that date first
+  const q = query(collection(db, "devotions"), where("date", "==", date));
+  const snapshot = await getDocs(q);
+  for (const docSnap of snapshot.docs) {
+    await deleteDoc(doc(db, "devotions", docSnap.id));
+  }
+
+  await addDoc(collection(db, "devotions"), { date, reference });
+
+  document.getElementById('devDate').value = '';
+  document.getElementById('devRef').value = '';
 });
