@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp, query, where, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 // Admin login check
 if (sessionStorage.getItem('isAdmin') !== 'true') {
   window.location.href = 'adminLogin.html';
@@ -117,4 +117,53 @@ document.getElementById('devotionForm').addEventListener('submit', async functio
 
   document.getElementById('devDate').value = '';
   document.getElementById('devRef').value = '';
+});
+document.getElementById('attendanceDate').valueAsDate = new Date();
+
+async function getActiveMembers() {
+  const snapshot = await getDocs(collection(db, "members"));
+  const active = [];
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    if (data.status === 'Active') {
+      active.push({ id: docSnap.id, ...data });
+    }
+  });
+  return active;
+}
+
+async function renderMemberChecklist() {
+  const checklist = document.getElementById('memberChecklist');
+  checklist.innerHTML = 'Loading...';
+
+  const active = await getActiveMembers();
+  const date = document.getElementById('attendanceDate').value;
+
+  const recordRef = doc(db, "attendanceRecords", date);
+  const recordSnap = await getDoc(recordRef);
+  const presentPhones = recordSnap.exists() ? recordSnap.data().present : [];
+
+  if (active.length === 0) {
+    checklist.innerHTML = '<p>No active members yet.</p>';
+    return;
+  }
+
+  checklist.innerHTML = active.map(m => `
+    <label style="display:block; margin-top:4px;">
+      <input type="checkbox" class="attendCheck" value="${m.phone}" ${presentPhones.includes(m.phone) ? 'checked' : ''}>
+      ${m.name} (${m.phone})
+    </label>
+  `).join('');
+}
+
+document.getElementById('attendanceDate').addEventListener('change', renderMemberChecklist);
+renderMemberChecklist();
+
+document.getElementById('saveAttendanceBtn').addEventListener('click', async function() {
+  const date = document.getElementById('attendanceDate').value;
+  const checked = Array.from(document.querySelectorAll('.attendCheck:checked')).map(c => c.value);
+
+  await setDoc(doc(db, "attendanceRecords", date), { date, present: checked });
+
+  alert('Attendance saved for ' + date);
 });
