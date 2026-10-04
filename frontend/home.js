@@ -7,7 +7,18 @@ if (!currentMember || currentMember.status !== 'Active') {
 }
 
 document.getElementById('welcomeMessage').textContent = 'Hello, ' + currentMember.name + '!';
+if (currentMember.lastPaymentDate) {
+  const daysSincePayment = Math.floor((Date.now() - new Date(currentMember.lastPaymentDate)) / (1000 * 60 * 60 * 24));
+  const daysLeft = 30 - daysSincePayment;
+  const countdownEl = document.getElementById('paymentCountdown');
 
+  if (daysLeft <= 5 && daysLeft > 0) {
+    countdownEl.textContent = `⚠️ Membership renews in ${daysLeft} day(s)`;
+    countdownEl.style.color = '#c0392b';
+  } else if (daysLeft > 0) {
+    countdownEl.textContent = `Membership active — ${daysLeft} day(s) remaining`;
+  }
+}
 async function loadAnnouncements() {
   const list = document.getElementById('announcementsList');
   list.innerHTML = 'Loading...';

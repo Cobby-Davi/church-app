@@ -54,10 +54,15 @@ async function loadPendingMembers() {
 
 async function updateStatus(id, newStatus) {
   const memberRef = doc(db, "members", id);
-  await updateDoc(memberRef, { status: newStatus });
+  const updateData = { status: newStatus };
+
+  if (newStatus === 'Active') {
+    updateData.lastPaymentDate = new Date().toISOString();
+  }
+
+  await updateDoc(memberRef, updateData);
   loadPendingMembers();
 }
-
 loadPendingMembers();
 document.getElementById('announcementForm').addEventListener('submit', async function(e) {
   e.preventDefault();

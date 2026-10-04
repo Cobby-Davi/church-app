@@ -5,18 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment - In Him Is Life Church International</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .momo-box {
+      background: #f9f9f9;
+      border-left: 4px solid #2c3e50;
+      padding: 15px;
+      border-radius: 4px;
+      font-size: 14px;
+      text-align: left;
+      margin-top: 15px;
+    }
+    .momo-number { font-size: 18px; font-weight: bold; color: #2c3e50; }
+    .momo-name { font-size: 15px; font-weight: bold; color: #2c3e50; }
+    .notice {
+      font-size: 12px;
+      color: #c0392b;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
   <div class="register-container">
     <h1>Membership Payment</h1>
-    <p class="subtitle">Pay your monthly fee to continue</p>
-    <p><strong>Amount: GHS 20.00 / month</strong></p>
+    <p class="subtitle">Your access is locked until payment is confirmed</p>
 
-    <button id="payButton">Pay Now (Test)</button>
+    <div class="momo-box">
+      Send <strong>GHS 8.50</strong> (covers one full month) to:<br><br>
+      <span class="momo-number">0553992237</span><br>
+      Name on account: <span class="momo-name">David Cobbina</span><br>
+      <span id="momoNetwork">MTN Mobile Money</span>
+      <br><br>
+      Use your <strong>full name</strong> as the payment reference, then tap the button below once sent.
+    </div>
+
+    <p class="notice">⚠️ You will not be able to access the app until your payment is confirmed and approved.</p>
+
+    <button id="paidButton">I've Paid</button>
     <p id="statusMessage"></p>
   </div>
 
- <script type="module" src="payment.js"></script>
+  <script type="module" src="payment.js"></script>
 </body>
 </html>

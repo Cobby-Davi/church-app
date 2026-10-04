@@ -1,7 +1,7 @@
 import { db } from './firebase-config.js';
 import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-document.getElementById('payButton').addEventListener('click', async function() {
+document.getElementById('paidButton').addEventListener('click', async function() {
   let currentMember = JSON.parse(localStorage.getItem('currentMember'));
 
   if (!currentMember || !currentMember.id) {

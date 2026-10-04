@@ -12,9 +12,7 @@
     .bible-controls select, .bible-controls input {
       padding: 6px; font-size: 13px; border: 1px solid #ccc; border-radius: 5px;
     }
-    .bible-controls button {
-      width: auto; padding: 6px 10px; font-size: 13px;
-    }
+    .bible-controls button { width: auto; padding: 6px 10px; font-size: 13px; }
     #verseDisplay { font-size: 14px; line-height: 1.6; }
     #verseDisplay sup { font-weight: bold; color: #2c3e50; margin-right: 3px; }
     .nav-buttons { display: flex; justify-content: space-between; margin-top: 15px; }
@@ -22,6 +20,15 @@
     .search-box { display: flex; gap: 5px; margin-bottom: 15px; }
     .search-box input { flex: 1; padding: 6px; font-size: 13px; }
     .search-box button { width: auto; padding: 6px 10px; }
+    .offline-box {
+      background: #f0f7ff; border-left: 4px solid #2c3e50;
+      padding: 10px; border-radius: 4px; font-size: 12px; margin-bottom: 15px;
+    }
+    .offline-box button { width: auto; padding: 6px 10px; font-size: 12px; margin-top: 5px; }
+    html {
+  scroll-behavior: smooth;
+}
+
   </style>
 </head>
 <body>
@@ -29,6 +36,8 @@
   <div class="register-container home-container">
     <a class="back-link" href="home.html">&larr; Back to Home</a>
     <h1 style="text-align:center; font-size:18px;">Bible</h1>
+
+    <div class="offline-box" id="offlineStatus">Checking offline status...</div>
 
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="e.g. John 3:16">
@@ -41,7 +50,7 @@
       <button id="loadBtn">Load</button>
     </div>
 
-    <div id="verseDisplay">Select a book and chapter to begin.</div>
+    <div id="verseDisplay">Loading...</div>
 
     <div class="nav-buttons">
       <button id="prevBtn">&larr; Previous Chapter</button>
@@ -49,6 +58,6 @@
     </div>
   </div>
 
-  <script src="bible.js"></script>
+  <script type="module" src="bible.js"></script>
 </body>
 </html>
