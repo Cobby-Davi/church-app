@@ -186,3 +186,69 @@ document.getElementById('liveLinksForm').addEventListener('submit', async functi
   await setDoc(doc(db, "settings", "liveLinks"), { facebook, zoom });
   alert('Live links updated.');
 });
+document.getElementById('addMemberForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('newName').value.trim();
+  const phone = document.getElementById('newPhone').value.trim();
+  const password = document.getElementById('newPassword').value;
+
+  if (!name || !phone || !password) return;
+
+  // Check if a member with this phone already exists
+  const q = query(collection(db, "members"), where("phone", "==", phone));
+  const snapshot = await getDocs(q);
+
+  if (!snapshot.empty) {
+    alert('A member with that phone number already exists.');
+    return;
+  }
+
+  await addDoc(collection(db, "members"), {
+    name, phone, password, status: 'Active', createdAt: serverTimestamp()
+  });
+
+  document.getElementById('newName').value = '';
+  document.getElementById('newPhone').value = '';
+  document.getElementById('newPassword').value = '';
+
+  renderAllMembers();
+  renderMemberChecklist();
+});
+
+async function renderAllMembers() {
+  const list = document.getElementById('allMembersList');
+  list.innerHTML = 'Loading...';
+
+  const snapshot = await getDocs(collection(db, "members"));
+  const members = [];
+  snapshot.forEach(docSnap => members.push({ id: docSnap.id, ...docSnap.data() }));
+
+  if (members.length === 0) {
+    list.innerHTML = '<p style="font-size:13px; color:#666;">No members yet.</p>';
+    return;
+  }
+
+  list.innerHTML = members.map(m => `
+    <div class="member-row">
+      <div class="member-info">
+        <strong>${m.name}</strong> (${m.status})<br>
+        ${m.phone}
+      </div>
+      <div class="member-actions">
+        <button class="reject-btn remove-member-btn" data-id="${m.id}">Remove</button>
+      </div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.remove-member-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Remove this member completely?')) return;
+      await deleteDoc(doc(db, "members", btn.dataset.id));
+      renderAllMembers();
+      renderMemberChecklist();
+    });
+  });
+}
+
+renderAllMembers();
