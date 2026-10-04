@@ -167,3 +167,22 @@ document.getElementById('saveAttendanceBtn').addEventListener('click', async fun
 
   alert('Attendance saved for ' + date);
 });
+async function loadLiveLinksForm() {
+  const linksRef = doc(db, "settings", "liveLinks");
+  const linksSnap = await getDoc(linksRef);
+  const links = linksSnap.exists() ? linksSnap.data() : {};
+
+  document.getElementById('facebookLink').value = links.facebook || '';
+  document.getElementById('zoomLink').value = links.zoom || '';
+}
+loadLiveLinksForm();
+
+document.getElementById('liveLinksForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const facebook = document.getElementById('facebookLink').value.trim();
+  const zoom = document.getElementById('zoomLink').value.trim();
+
+  await setDoc(doc(db, "settings", "liveLinks"), { facebook, zoom });
+  alert('Live links updated.');
+});
