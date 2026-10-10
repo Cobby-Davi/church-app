@@ -7,10 +7,11 @@ document.getElementById('registerForm').addEventListener('submit', async functio
   const name = document.getElementById('name').value.trim();
   const phone = document.getElementById('phone').value.trim();
   const password = document.getElementById('password').value;
+  const birthday = document.getElementById('birthday').value;
 
   const statusMessage = document.getElementById('statusMessage');
 
-  if (name === '' || phone === '' || password === '') {
+  if (name === '' || phone === '' || password === '' || birthday === '') {
     statusMessage.textContent = 'Please fill in all fields.';
     return;
   }
@@ -27,6 +28,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
       name: name,
       phone: phone,
       password: password, // NOTE: plain text for now, will secure properly later
+      birthday: birthday,
       status: "Unpaid",
       createdAt: new Date().toISOString()
     });
@@ -34,7 +36,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     // Remember who just registered, for the next pages
     localStorage.setItem('currentMember', JSON.stringify({
       id: docRef.id,
-      name, phone, password, status: "Unpaid"
+      name, phone, password, birthday, status: "Unpaid"
     }));
 
     window.location.href = 'payment.html';

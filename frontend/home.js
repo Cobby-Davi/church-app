@@ -7,6 +7,7 @@ if (!currentMember || currentMember.status !== 'Active') {
 }
 
 document.getElementById('welcomeMessage').textContent = 'Hello, ' + currentMember.name + '!';
+
 if (currentMember.lastPaymentDate) {
   const daysSincePayment = Math.floor((Date.now() - new Date(currentMember.lastPaymentDate)) / (1000 * 60 * 60 * 24));
   const daysLeft = 30 - daysSincePayment;
@@ -19,6 +20,35 @@ if (currentMember.lastPaymentDate) {
     countdownEl.textContent = `Membership active — ${daysLeft} day(s) remaining`;
   }
 }
+
+async function checkBirthdays() {
+  const snapshot = await getDocs(collection(db, "members"));
+
+  const today = new Date();
+  const todayMonth = today.getMonth() + 1;
+  const todayDay = today.getDate();
+
+  const birthdayMembers = [];
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    if (data.status === 'Active' && data.birthday) {
+      const bday = new Date(data.birthday);
+      if (bday.getMonth() + 1 === todayMonth && bday.getDate() === todayDay) {
+        birthdayMembers.push(data.name);
+      }
+    }
+  });
+
+  if (birthdayMembers.length > 0) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#fff3cd; border-left:4px solid #ffc107; padding:10px; border-radius:4px; margin-bottom:15px; font-size:13px; text-align:center;';
+    banner.innerHTML = '🎉 Happy Birthday ' + birthdayMembers.join(', ') + '! 🎂';
+    document.querySelector('.home-container').insertBefore(banner, document.querySelector('h2'));
+  }
+}
+
+checkBirthdays();
+
 async function loadAnnouncements() {
   const list = document.getElementById('announcementsList');
   list.innerHTML = 'Loading...';

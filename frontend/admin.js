@@ -1,5 +1,6 @@
 import { db } from './firebase-config.js';
 import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp, query, where, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 // Admin login check
 if (sessionStorage.getItem('isAdmin') !== 'true') {
   window.location.href = 'adminLogin.html';
@@ -64,6 +65,7 @@ async function updateStatus(id, newStatus) {
   loadPendingMembers();
 }
 loadPendingMembers();
+
 document.getElementById('announcementForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
@@ -82,6 +84,7 @@ document.getElementById('announcementForm').addEventListener('submit', async fun
   document.getElementById('annTitle').value = '';
   document.getElementById('annMessage').value = '';
 });
+
 document.getElementById('sermonForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
@@ -103,6 +106,7 @@ document.getElementById('sermonForm').addEventListener('submit', async function(
   document.getElementById('sermonSpeaker').value = '';
   document.getElementById('sermonNotes').value = '';
 });
+
 document.getElementById('devotionForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
@@ -111,7 +115,6 @@ document.getElementById('devotionForm').addEventListener('submit', async functio
 
   if (date === '' || reference === '') return;
 
-  // Remove any existing devotion for that date first
   const q = query(collection(db, "devotions"), where("date", "==", date));
   const snapshot = await getDocs(q);
   for (const docSnap of snapshot.docs) {
@@ -123,6 +126,7 @@ document.getElementById('devotionForm').addEventListener('submit', async functio
   document.getElementById('devDate').value = '';
   document.getElementById('devRef').value = '';
 });
+
 document.getElementById('attendanceDate').valueAsDate = new Date();
 
 async function getActiveMembers() {
@@ -172,6 +176,7 @@ document.getElementById('saveAttendanceBtn').addEventListener('click', async fun
 
   alert('Attendance saved for ' + date);
 });
+
 async function loadLiveLinksForm() {
   const linksRef = doc(db, "settings", "liveLinks");
   const linksSnap = await getDoc(linksRef);
@@ -191,16 +196,17 @@ document.getElementById('liveLinksForm').addEventListener('submit', async functi
   await setDoc(doc(db, "settings", "liveLinks"), { facebook, zoom });
   alert('Live links updated.');
 });
+
 document.getElementById('addMemberForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
   const name = document.getElementById('newName').value.trim();
   const phone = document.getElementById('newPhone').value.trim();
   const password = document.getElementById('newPassword').value;
+  const birthday = document.getElementById('newBirthday').value;
 
-  if (!name || !phone || !password) return;
+  if (!name || !phone || !password || !birthday) return;
 
-  // Check if a member with this phone already exists
   const q = query(collection(db, "members"), where("phone", "==", phone));
   const snapshot = await getDocs(q);
 
@@ -210,12 +216,13 @@ document.getElementById('addMemberForm').addEventListener('submit', async functi
   }
 
   await addDoc(collection(db, "members"), {
-    name, phone, password, status: 'Active', createdAt: serverTimestamp()
+    name, phone, password, birthday, status: 'Active', createdAt: serverTimestamp()
   });
 
   document.getElementById('newName').value = '';
   document.getElementById('newPhone').value = '';
   document.getElementById('newPassword').value = '';
+  document.getElementById('newBirthday').value = '';
 
   renderAllMembers();
   renderMemberChecklist();
