@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>In Him Is Life Church International</title>
+  <title>Register - In Him Is Life Church International</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="register-container">
-    <h1>In Him Is Life Church International</h1>
-    <p class="subtitle">Create your member account</p>
+    <img src="logo.jpeg" alt="IHIL Church International logo" class="logo">
+    <div class="brand">In Him Is Life Church International</div>
+    <h1>Create your account</h1>
+    <p class="subtitle">Join our church family online</p>
 
     <form id="registerForm">
       <label for="name">Full Name</label>
@@ -18,15 +20,21 @@
 
       <label for="phone">Phone Number</label>
       <input type="tel" id="phone" name="phone" required placeholder="Enter your phone number">
+
       <label for="birthday">Birthday</label>
       <input type="date" id="birthday" name="birthday" required>
+
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" required placeholder="Create a password">
+      <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="Create a password">
 
       <button type="submit">Register</button>
     </form>
 
     <p id="statusMessage"></p>
+
+    <p class="subtitle" style="margin:18px 0 0;">
+      Already a member? <a href="login.html">Login</a>
+    </p>
   </div>
 
   <script type="module" src="script.js"></script>

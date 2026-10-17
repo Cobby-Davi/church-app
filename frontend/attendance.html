@@ -5,22 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance - In Him Is Life Church International</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .home-container { width: 350px; text-align: left; }
-    .back-link { display: block; margin-bottom: 15px; font-size: 13px; }
-    .absentee-row { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-  </style>
 </head>
-<body>
+<body class="has-nav">
 
   <div class="register-container home-container">
-    <a class="back-link" href="home.html">&larr; Back to Home</a>
-    <h1 style="text-align:center; font-size:18px;">Attendance Follow-Up</h1>
+    <img src="logo.jpeg" alt="IHIL Church International logo" class="logo-sm">
+    <div class="brand">In Him Is Life Church International</div>
+    <h1>Attendance Follow-Up</h1>
     <p class="subtitle">Members absent from the most recent service</p>
 
     <div id="absenteeList"></div>
   </div>
 
-<script type="module" src="attendance.js"></script>
+  <nav class="bottom-nav">
+    <a href="home.html"><span>🏠</span>Home</a>
+    <a href="sermons.html"><span>🎤</span>Sermons</a>
+    <a href="bible.html"><span>📖</span>Bible</a>
+    <a href="prayer.html"><span>🤲</span>Prayer</a>
+    <a href="live.html"><span>🔴</span>Live</a>
+  </nav>
+
+  <script type="module" src="attendance.js"></script>
 </body>
 </html>

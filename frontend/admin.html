@@ -5,93 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - In Him Is Life Church International</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-   body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px 0;
-  overflow-y: auto;
-}
-
-.register-container {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  width: 300px;
-  text-align: center;
-}
-
-h1 {
-  font-size: 20px;
-  margin-bottom: 5px;
-  color: #2c3e50;
-}
-
-.subtitle {
-  color: #666;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-
-label {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #333;
-}
-
-input {
-  padding: 8px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-button {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #1a252f;
-}
-
-#statusMessage {
-  margin-top: 15px;
-  font-size: 13px;
-  color: #c0392b;
-}
-  </style>
 </head>
 <body>
 
   <div class="register-container admin-container">
+    <img src="logo.jpeg" alt="IHIL Church International logo" class="logo-sm">
+    <div class="brand">In Him Is Life Church International</div>
     <h1>Admin Dashboard</h1>
-    <p class="subtitle">Pending Member Approvals</p>
+    <p class="subtitle">Manage members and church content</p>
 
+    <h2>Pending Member Approvals</h2>
     <div id="pendingList"></div>
 
-    <hr style="margin:20px 0;">
+    <hr>
 
-    <h2 style="font-size:16px;">Post an Announcement</h2>
+    <h2>Post an Announcement</h2>
     <form id="announcementForm">
       <label for="annTitle">Title</label>
       <input type="text" id="annTitle" required placeholder="e.g. Sunday Service Update">
@@ -102,9 +30,9 @@ button:hover {
       <button type="submit">Post</button>
     </form>
 
-    <hr style="margin:20px 0;">
+    <hr>
 
-    <h2 style="font-size:16px;">Post a Sermon</h2>
+    <h2>Post a Sermon</h2>
     <form id="sermonForm">
       <label for="sermonTitle">Title</label>
       <input type="text" id="sermonTitle" required placeholder="e.g. Walking in Faith">
@@ -118,9 +46,9 @@ button:hover {
       <button type="submit">Post Sermon</button>
     </form>
 
-    <hr style="margin:20px 0;">
+    <hr>
 
-    <h2 style="font-size:16px;">Schedule a Devotion</h2>
+    <h2>Schedule a Devotion</h2>
     <form id="devotionForm">
       <label for="devDate">Date</label>
       <input type="date" id="devDate" required>
@@ -131,41 +59,43 @@ button:hover {
       <button type="submit">Schedule</button>
     </form>
 
-    <hr style="margin:20px 0;">
+    <hr>
 
-    <h2 style="font-size:16px;">Mark Attendance</h2>
+    <h2>Mark Attendance</h2>
     <label for="attendanceDate">Service Date</label>
     <input type="date" id="attendanceDate">
 
-    <div id="memberChecklist" style="margin-top:10px; font-size:13px;"></div>
+    <div id="memberChecklist" style="margin-top:12px; font-size:14px; text-align:left;"></div>
 
-    <button id="saveAttendanceBtn" style="margin-top:10px;">Save Attendance</button>
+    <button id="saveAttendanceBtn">Save Attendance</button>
 
-    <hr style="margin:20px 0;">
+    <hr>
 
-    <h2 style="font-size:16px;">Add Member Manually</h2>
+    <h2>Add Member Manually</h2>
     <form id="addMemberForm">
       <label for="newName">Full Name</label>
       <input type="text" id="newName" required>
 
       <label for="newPhone">Phone Number</label>
       <input type="tel" id="newPhone" required>
+
       <label for="newBirthday">Birthday</label>
       <input type="date" id="newBirthday" required>
+
       <label for="newPassword">Password</label>
       <input type="text" id="newPassword" required>
 
       <button type="submit">Add as Active Member</button>
     </form>
 
-    <hr style="margin:20px 0;">
+    <hr>
 
-    <h2 style="font-size:16px;">All Members</h2>
+    <h2>All Members</h2>
     <div id="allMembersList"></div>
 
-    <hr style="margin:20px 0;">
+    <hr>
 
-    <h2 style="font-size:16px;">Update Live Stream Links</h2>
+    <h2>Update Live Stream Links</h2>
     <form id="liveLinksForm">
       <label for="facebookLink">Facebook Live Link</label>
       <input type="url" id="facebookLink" placeholder="https://facebook.com/...">

@@ -5,37 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home - In Him Is Life Church International</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .home-container { width: 350px; text-align: left; }
-    .announcement {
-      background: #f9f9f9;
-      border-left: 4px solid #2c3e50;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-    }
-    .announcement h3 { margin: 0 0 5px 0; font-size: 15px; }
-    .announcement p { margin: 0; font-size: 13px; color: #444; }
-    .announcement .date { font-size: 11px; color: #999; margin-top: 5px; }
-  </style>
 </head>
-<body>
+<body class="has-nav">
 
   <div class="register-container home-container">
-    <h1 style="text-align:center;">In Him Is Life Church International</h1>
-    <p class="subtitle" id="welcomeMessage" style="text-align:center;">Loading...</p>
-    <p id="paymentCountdown" style="text-align:center; font-size:12px; color:#666;"></p>
-        <p id="notifBox" style="text-align:center;"><button id="enableNotifBtn" style="width:auto; padding:6px 12px; font-size:13px; margin-top:0;">🔔 Enable Notifications</button></p>
-    <h2 style="font-size:16px; margin-top:20px;">Announcements & Updates</h2>
-        <p><a href="sermons.html">📖 View Sermon Archive</a></p>
-            <p><a href="bible.html">📘 Read the Bible</a></p>
-                <p><a href="devotion.html">🙏 Today's Devotion</a></p>
-                    <p><a href="attendance.html">📋 Attendance Follow-Up</a></p>
-                        <p><a href="prayer.html">🙌 Prayer Wall</a></p>
-                            <p><a href="live.html">🔴 Join Us Live</a></p>
+    <img src="logo.jpeg" alt="IHIL Church International logo" class="logo-sm">
+    <div class="brand">In Him Is Life Church International</div>
+    <h1 id="welcomeMessage">Loading...</h1>
+    <p id="paymentCountdown" class="subtitle" style="margin-bottom:6px;"></p>
+    <p id="notifBox" style="margin:0;"><button id="enableNotifBtn" style="margin-top:6px; padding:8px 14px; font-size:13px;">🔔 Enable Notifications</button></p>
+
+    <div class="quick-links">
+      <a href="devotion.html"><span>🙏</span>Devotion</a>
+      <a href="sermons.html"><span>🎤</span>Sermons</a>
+      <a href="bible.html"><span>📖</span>Bible</a>
+      <a href="prayer.html"><span>🤲</span>Prayer</a>
+      <a href="attendance.html"><span>📋</span>Attendance</a>
+      <a href="live.html"><span>🔴</span>Live</a>
+    </div>
+
+    <h2>Announcements</h2>
     <div id="announcementsList"></div>
   </div>
 
- <script type="module" src="home.js"></script>
+  <nav class="bottom-nav">
+    <a href="home.html" class="active"><span>🏠</span>Home</a>
+    <a href="sermons.html"><span>🎤</span>Sermons</a>
+    <a href="bible.html"><span>📖</span>Bible</a>
+    <a href="prayer.html"><span>🤲</span>Prayer</a>
+    <a href="live.html"><span>🔴</span>Live</a>
+  </nav>
+
+  <script type="module" src="home.js"></script>
 </body>
 </html>

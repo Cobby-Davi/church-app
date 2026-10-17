@@ -5,29 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sermons - In Him Is Life Church International</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .home-container { width: 350px; text-align: left; }
-    .sermon-card {
-      background: #f9f9f9;
-      border-left: 4px solid #2c3e50;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-    }
-    .sermon-card h3 { margin: 0 0 5px 0; font-size: 15px; }
-    .sermon-card .meta { font-size: 12px; color: #666; margin-bottom: 5px; }
-    .sermon-card p { margin: 0; font-size: 13px; color: #444; }
-    .back-link { display: block; margin-bottom: 15px; font-size: 13px; }
-  </style>
 </head>
-<body>
+<body class="has-nav">
 
   <div class="register-container home-container">
-    <a class="back-link" href="home.html">&larr; Back to Home</a>
-    <h1 style="text-align:center; font-size:18px;">Sermon Archive</h1>
+    <img src="logo.jpeg" alt="IHIL Church International logo" class="logo-sm">
+    <div class="brand">In Him Is Life Church International</div>
+    <h1>Sermon Archive</h1>
+    <p class="subtitle">Listen back and read the notes</p>
 
     <div id="sermonsList"></div>
   </div>
+
+  <nav class="bottom-nav">
+    <a href="home.html"><span>🏠</span>Home</a>
+    <a href="sermons.html" class="active"><span>🎤</span>Sermons</a>
+    <a href="bible.html"><span>📖</span>Bible</a>
+    <a href="prayer.html"><span>🤲</span>Prayer</a>
+    <a href="live.html"><span>🔴</span>Live</a>
+  </nav>
 
   <script type="module" src="sermons.js"></script>
 </body>
