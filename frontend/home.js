@@ -1,3 +1,4 @@
+import { enableNotifications, listenForMessages } from './notifications.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -79,3 +80,19 @@ async function loadAnnouncements() {
 }
 
 loadAnnouncements();
+const notifBox = document.getElementById('notifBox');
+if ('Notification' in window && Notification.permission === 'granted') {
+  notifBox.style.display = 'none';
+  listenForMessages();
+}
+
+
+document.getElementById('enableNotifBtn').addEventListener('click', async () => {
+  try {
+    await enableNotifications(currentMember.id);
+    notifBox.textContent = '✅ Notifications enabled.';
+  } catch (err) {
+    console.error(err);
+    notifBox.textContent = '❌ Could not enable notifications: ' + err.message;
+  }
+});
