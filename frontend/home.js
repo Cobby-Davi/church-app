@@ -16,7 +16,7 @@ if (currentMember.lastPaymentDate) {
 
   if (daysLeft <= 5 && daysLeft > 0) {
     countdownEl.textContent = `⚠️ Membership renews in ${daysLeft} day(s)`;
-    countdownEl.style.color = '#c0392b';
+    countdownEl.style.color = '#ff8f84';
   } else if (daysLeft > 0) {
     countdownEl.textContent = `Membership active — ${daysLeft} day(s) remaining`;
   }
