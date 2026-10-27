@@ -1,9 +1,6 @@
 import { isBibleDownloaded, downloadBible, getOfflineChapter, getOfflineBooks, getOfflineChapterCount } from './bible-offline.js';
-
-const currentMember = JSON.parse(localStorage.getItem('currentMember'));
-if (!currentMember || currentMember.status !== 'Active') {
-  window.location.href = 'login.html';
-}
+import { requireActiveMember } from './auth-guard.js';
+await requireActiveMember();
 
 const onlineBooks = [
   "Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth",

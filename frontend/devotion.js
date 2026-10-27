@@ -1,21 +1,19 @@
+import { requireActiveMember, escapeHtml } from './auth-guard.js';
 import { db } from './firebase-config.js';
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const currentMember = JSON.parse(localStorage.getItem('currentMember'));
-if (!currentMember || currentMember.status !== 'Active') {
-  window.location.href = 'login.html';
-}
+await requireActiveMember();
 
 function getTodayString() {
-  return new Date().toISOString().split('T')[0];
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
 async function loadTodayDevotion() {
   const display = document.getElementById('devotionDisplay');
-  const today = getTodayString();
 
   try {
-    const q = query(collection(db, "devotions"), where("date", "==", today));
+    const q = query(collection(db, 'devotions'), where('date', '==', getTodayString()));
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
@@ -34,7 +32,7 @@ async function loadTodayDevotion() {
       return;
     }
 
-    display.innerHTML = `<span class="ref">${data.reference}</span>${data.text}`;
+    display.innerHTML = `<span class="ref">${escapeHtml(data.reference)}</span>${escapeHtml(data.text)}`;
   } catch (err) {
     console.error(err);
     display.textContent = 'Error loading devotion.';

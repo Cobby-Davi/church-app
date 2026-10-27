@@ -1,47 +1,40 @@
+import { requireActiveMember, escapeHtml } from './auth-guard.js';
 import { db } from './firebase-config.js';
-import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, getDocs, orderBy, limit, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const currentMember = JSON.parse(localStorage.getItem('currentMember'));
-if (!currentMember || currentMember.status !== 'Active') {
-  window.location.href = 'login.html';
-}
+await requireActiveMember();
 
 async function loadAbsentees() {
   const list = document.getElementById('absenteeList');
   list.innerHTML = 'Loading...';
 
-  const recordsSnap = await getDocs(collection(db, "attendanceRecords"));
-  if (recordsSnap.empty) {
-    list.innerHTML = '<p style="font-size:13px; color:#666;">No attendance has been recorded yet.</p>';
-    return;
-  }
+  try {
+    const q = query(collection(db, 'attendanceRecords'), orderBy('date', 'desc'), limit(1));
+    const snapshot = await getDocs(q);
 
-  // Find the most recent record by comparing date strings
-  let latest = null;
-  recordsSnap.forEach(docSnap => {
-    const data = docSnap.data();
-    if (!latest || data.date > latest.date) latest = data;
-  });
+    if (snapshot.empty) {
+      list.innerHTML = '<p style="font-size:13px; color:#c4b0d3;">No attendance has been recorded yet.</p>';
+      return;
+    }
 
-  const membersSnap = await getDocs(collection(db, "members"));
-  const activeMembers = [];
-  membersSnap.forEach(docSnap => {
-    const data = docSnap.data();
-    if (data.status === 'Active') activeMembers.push(data);
-  });
+    const latest = snapshot.docs[0].data();
+    const absent = Array.isArray(latest.absent) ? latest.absent : [];
 
-  const absentees = activeMembers.filter(m => !latest.present.includes(m.phone));
+    if (absent.length === 0) {
+      list.innerHTML = `<p style="font-size:14px;">Everyone attended on ${escapeHtml(latest.date)}! 🎉</p>`;
+      return;
+    }
 
-  if (absentees.length === 0) {
-    list.innerHTML = `<p style="font-size:13px;">Everyone attended on ${latest.date}! 🎉</p>`;
-  } else {
-    list.innerHTML = `<p style="font-size:13px; color:#666;">Service date: ${latest.date}</p>` +
-      absentees.map(m => `
+    list.innerHTML = `<p style="font-size:13px; color:#c4b0d3;">Service date: ${escapeHtml(latest.date)}</p>` +
+      absent.map(m => `
         <div class="absentee-row">
-          <strong>${m.name}</strong><br>
-          📞 ${m.phone}
+          <strong>${escapeHtml(m.name)}</strong><br>
+          <a href="tel:${escapeHtml(m.phone)}">📞 ${escapeHtml(m.phone)}</a>
         </div>
       `).join('');
+  } catch (err) {
+    console.error(err);
+    list.innerHTML = '<p style="font-size:13px; color:#ff8f84;">Error loading attendance.</p>';
   }
 }
 

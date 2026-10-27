@@ -1,45 +1,32 @@
-import { db } from './firebase-config.js';
-import { collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { auth, db } from './firebase-config.js';
+import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { phoneToEmail } from './auth-guard.js';
 
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  const phone = document.getElementById('phone').value.trim();
+  const phone = document.getElementById('phone').value;
   const password = document.getElementById('password').value;
   const statusMessage = document.getElementById('statusMessage');
 
   statusMessage.textContent = 'Checking...';
 
   try {
-    const q = query(collection(db, "members"), where("phone", "==", phone));
-    const snapshot = await getDocs(q);
+    const cred = await signInWithEmailAndPassword(auth, phoneToEmail(phone), password);
+    const snap = await getDoc(doc(db, 'members', cred.user.uid));
 
-    if (snapshot.empty) {
-      statusMessage.textContent = 'No account found with that phone number.';
+    if (!snap.exists()) {
+      await signOut(auth);
+      statusMessage.textContent = 'Account not found. Please register first.';
       return;
     }
 
-    const memberDoc = snapshot.docs[0];
-    let member = { id: memberDoc.id, ...memberDoc.data() };
-
-    if (member.password !== password) {
-      statusMessage.textContent = 'Incorrect password.';
-      return;
-    }
-
-    // Check if 30 days have passed since last payment
-    if (member.status === 'Active' && member.lastPaymentDate) {
-      const daysSincePayment = (Date.now() - new Date(member.lastPaymentDate)) / (1000 * 60 * 60 * 24);
-      if (daysSincePayment > 30) {
-        await updateDoc(doc(db, "members", member.id), { status: 'Unpaid' });
-        member.status = 'Unpaid';
-      }
-    }
-
-    localStorage.setItem('currentMember', JSON.stringify(member));
+    const member = snap.data();
 
     switch (member.status) {
       case 'Active':
+        // The Home page checks that the paid month has not ended
         window.location.href = 'home.html';
         break;
       case 'Unpaid':
@@ -49,13 +36,21 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         window.location.href = 'pending.html';
         break;
       case 'Rejected':
+        await signOut(auth);
         statusMessage.textContent = 'Your registration was not approved. Please contact the church.';
         break;
       default:
+        await signOut(auth);
         statusMessage.textContent = 'Account status unknown. Please contact the church.';
     }
   } catch (err) {
     console.error(err);
-    statusMessage.textContent = 'Something went wrong. Please try again.';
+    if (['auth/invalid-credential', 'auth/user-not-found', 'auth/wrong-password', 'auth/invalid-email'].includes(err.code)) {
+      statusMessage.textContent = 'Phone number or password is incorrect.';
+    } else if (err.code === 'auth/too-many-requests') {
+      statusMessage.textContent = 'Too many attempts. Please wait a few minutes and try again.';
+    } else {
+      statusMessage.textContent = 'Something went wrong. Please try again.';
+    }
   }
 });

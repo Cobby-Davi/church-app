@@ -1,31 +1,46 @@
+import { requireActiveMember } from './auth-guard.js';
 import { db } from './firebase-config.js';
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const currentMember = JSON.parse(localStorage.getItem('currentMember'));
-if (!currentMember || currentMember.status !== 'Active') {
-  window.location.href = 'login.html';
+await requireActiveMember();
+
+// Only allow normal web links
+function safeUrl(url) {
+  try {
+    const u = new URL(url);
+    return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 async function loadLiveLinks() {
   const container = document.getElementById('liveLinks');
   container.innerHTML = 'Loading...';
 
-  const linksRef = doc(db, "settings", "liveLinks");
-  const linksSnap = await getDoc(linksRef);
-  const links = linksSnap.exists() ? linksSnap.data() : {};
+  try {
+    const linksSnap = await getDoc(doc(db, 'settings', 'liveLinks'));
+    const links = linksSnap.exists() ? linksSnap.data() : {};
 
-  let html = '';
-  if (links.facebook) {
-    html += `<a class="live-btn facebook-btn" href="${links.facebook}" target="_blank">📘 Join on Facebook Live</a>`;
-  }
-  if (links.zoom) {
-    html += `<a class="live-btn zoom-btn" href="${links.zoom}" target="_blank">💻 Join on Zoom</a>`;
-  }
-  if (!links.facebook && !links.zoom) {
-    html = '<p style="font-size:13px; color:#666; text-align:center;">No live links have been set yet.</p>';
-  }
+    const facebook = safeUrl(links.facebook);
+    const zoom = safeUrl(links.zoom);
 
-  container.innerHTML = html;
+    let html = '';
+    if (facebook) {
+      html += `<a class="live-btn facebook-btn" href="${facebook}" target="_blank" rel="noopener noreferrer">📘 Join on Facebook Live</a>`;
+    }
+    if (zoom) {
+      html += `<a class="live-btn zoom-btn" href="${zoom}" target="_blank" rel="noopener noreferrer">💻 Join on Zoom</a>`;
+    }
+    if (!facebook && !zoom) {
+      html = '<p style="font-size:13px; color:#c4b0d3; text-align:center;">No live links have been set yet.</p>';
+    }
+
+    container.innerHTML = html;
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = '<p style="font-size:13px; color:#ff8f84;">Error loading live links.</p>';
+  }
 }
 
 loadLiveLinks();

@@ -1,21 +1,19 @@
+import { requireActiveMember, escapeHtml } from './auth-guard.js';
 import { db } from './firebase-config.js';
 import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const currentMember = JSON.parse(localStorage.getItem('currentMember'));
-if (!currentMember || currentMember.status !== 'Active') {
-  window.location.href = 'login.html';
-}
+await requireActiveMember();
 
 async function loadSermons() {
   const list = document.getElementById('sermonsList');
   list.innerHTML = 'Loading...';
 
   try {
-    const q = query(collection(db, "sermons"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, 'sermons'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      list.innerHTML = '<p style="font-size:13px; color:#666;">No sermons posted yet.</p>';
+      list.innerHTML = '<p style="font-size:13px; color:#c4b0d3;">No sermons posted yet.</p>';
       return;
     }
 
@@ -23,15 +21,15 @@ async function loadSermons() {
       const s = docSnap.data();
       return `
         <div class="sermon-card">
-          <h3>${s.title}</h3>
-          <div class="meta">${s.speaker} &bull; ${s.date}</div>
-          <p>${s.notes}</p>
+          <h3>${escapeHtml(s.title)}</h3>
+          <div class="meta">${escapeHtml(s.speaker)} &bull; ${escapeHtml(s.date)}</div>
+          <p>${escapeHtml(s.notes)}</p>
         </div>
       `;
     }).join('');
   } catch (err) {
     console.error(err);
-    list.innerHTML = '<p style="font-size:13px; color:#c0392b;">Error loading sermons.</p>';
+    list.innerHTML = '<p style="font-size:13px; color:#ff8f84;">Error loading sermons.</p>';
   }
 }
 

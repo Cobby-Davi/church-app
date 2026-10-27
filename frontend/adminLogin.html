@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login - In Him Is Life Church International</title>
-  <link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#6a1b7a"><link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#6a1b7a"><link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body class="photo-bg bg-welcome">
+
   <div class="register-container">
     <img src="logo.jpeg" alt="IHIL Church International logo" class="logo">
     <div class="brand">In Him Is Life Church International</div>
@@ -14,8 +15,11 @@
     <p class="subtitle">Authorised leaders only</p>
 
     <form id="adminLoginForm">
-      <label for="adminPassword">Admin Password</label>
-      <input type="password" id="adminPassword" required autocomplete="off" placeholder="Enter admin password">
+      <label for="adminEmail">Email</label>
+      <input type="email" id="adminEmail" required autocomplete="username" placeholder="Admin email">
+
+      <label for="adminPassword">Password</label>
+      <input type="password" id="adminPassword" required autocomplete="current-password" placeholder="Admin password">
 
       <button type="submit">Login</button>
     </form>
@@ -23,6 +27,7 @@
     <p id="statusMessage"></p>
   </div>
 
-  <script src="adminLogin.js"></script>
-<script src="register-sw.js"></script></body>
+  <script type="module" src="adminLogin.js"></script>
+  <script src="register-sw.js"></script>
+</body>
 </html>
