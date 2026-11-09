@@ -7,19 +7,6 @@ const currentMember = await requireActiveMember();
 
 document.getElementById('welcomeMessage').textContent = 'Hello, ' + (currentMember.name || '') + '!';
 
-// Renewal countdown
-if (currentMember.paidUntil) {
-  const daysLeft = Math.ceil((currentMember.paidUntil.toDate() - new Date()) / (1000 * 60 * 60 * 24));
-  const countdownEl = document.getElementById('paymentCountdown');
-
-  if (daysLeft <= 5 && daysLeft > 0) {
-    countdownEl.textContent = `⚠️ Membership renews in ${daysLeft} day(s)`;
-    countdownEl.style.color = '#ff8f84';
-  } else if (daysLeft > 0) {
-    countdownEl.textContent = `Membership active — ${daysLeft} day(s) remaining`;
-  }
-}
-
 async function checkBirthdays() {
   try {
     const snapshot = await getDocs(collection(db, 'birthdays'));

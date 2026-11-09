@@ -4,80 +4,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
   collection, getDocs, doc, updateDoc, addDoc, setDoc, getDoc, deleteDoc,
-  query, where, serverTimestamp, Timestamp
+  query, where, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 await requireAdmin();
 
-// ---------- Helpers ----------
-const DAY = 24 * 60 * 60 * 1000;
-
-// Gives 30 days from today, or 30 days after their current end date if they pay early.
-function nextPaidUntil(existing) {
-  const current = existing && existing.toDate ? existing.toDate() : null;
-  const base = current && current > new Date() ? current : new Date();
-  return Timestamp.fromDate(new Date(base.getTime() + 30 * DAY));
-}
-
 // A second connection, used only to create member logins without signing you out.
 const secondaryApp = initializeApp(firebaseConfig, 'Secondary');
 const secondaryAuth = getAuth(secondaryApp);
-
-// ---------- Pending approvals ----------
-async function loadPendingMembers() {
-  const pendingList = document.getElementById('pendingList');
-  pendingList.innerHTML = 'Loading...';
-
-  const snapshot = await getDocs(query(collection(db, 'members'), where('status', '==', 'Pending Approval')));
-
-  if (snapshot.empty) {
-    pendingList.innerHTML = '<p style="font-size:13px; color:#c4b0d3; text-align:left;">No pending members right now.</p>';
-    return;
-  }
-
-  pendingList.innerHTML = snapshot.docs.map(d => {
-    const m = d.data();
-    return `
-      <div class="member-row">
-        <div class="member-info">
-          <strong>${escapeHtml(m.name)}</strong><br>
-          ${escapeHtml(m.phone)}
-        </div>
-        <div class="member-actions">
-          <button class="approve-btn" data-id="${d.id}">Approve</button>
-          <button class="reject-btn" data-id="${d.id}">Reject</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  document.querySelectorAll('.approve-btn').forEach(btn => {
-    btn.addEventListener('click', () => approveMember(btn.dataset.id));
-  });
-  document.querySelectorAll('.reject-btn').forEach(btn => {
-    btn.addEventListener('click', () => rejectMember(btn.dataset.id));
-  });
-}
-
-async function approveMember(id) {
-  const ref = doc(db, 'members', id);
-  const snap = await getDoc(ref);
-  const m = snap.data();
-
-  await updateDoc(ref, { status: 'Active', paidUntil: nextPaidUntil(m.paidUntil) });
-
-  // The list of birthdays everyone can see (just name and month-day)
-  if (m.birthday) {
-    await setDoc(doc(db, 'birthdays', id), { name: m.name, md: m.birthday.slice(5) });
-  }
-
-  refreshAll();
-}
-
-async function rejectMember(id) {
-  await updateDoc(doc(db, 'members', id), { status: 'Rejected' });
-  refreshAll();
-}
 
 // ---------- Announcements ----------
 document.getElementById('announcementForm').addEventListener('submit', async function(e) {
@@ -243,7 +177,6 @@ document.getElementById('addMemberForm').addEventListener('submit', async functi
     await setDoc(doc(db, 'members', cred.user.uid), {
       name, phone, birthday,
       status: 'Active',
-      paidUntil: nextPaidUntil(null),
       createdAt: serverTimestamp()
     });
     await setDoc(doc(db, 'birthdays', cred.user.uid), { name, md: birthday.slice(5) });
@@ -263,11 +196,14 @@ document.getElementById('addMemberForm').addEventListener('submit', async functi
 });
 
 // ---------- All members ----------
+let membersById = {};
+
 async function renderAllMembers() {
   const list = document.getElementById('allMembersList');
   list.innerHTML = 'Loading...';
 
   const snapshot = await getDocs(collection(db, 'members'));
+  membersById = {};
 
   if (snapshot.empty) {
     list.innerHTML = '<p style="font-size:13px; color:#c4b0d3; text-align:left;">No members yet.</p>';
@@ -276,25 +212,48 @@ async function renderAllMembers() {
 
   list.innerHTML = snapshot.docs.map(d => {
     const m = d.data();
-    const until = m.paidUntil && m.paidUntil.toDate ? ' • paid until ' + m.paidUntil.toDate().toLocaleDateString() : '';
+    membersById[d.id] = m;
+    const blocked = m.status === 'Rejected';
     return `
       <div class="member-row">
         <div class="member-info">
-          <strong>${escapeHtml(m.name)}</strong> (${escapeHtml(m.status)})<br>
-          ${escapeHtml(m.phone)}${escapeHtml(until)}
+          <strong>${escapeHtml(m.name)}</strong> (${blocked ? 'Blocked' : escapeHtml(m.status)})<br>
+          ${escapeHtml(m.phone)}<br>
+          🎂 ${escapeHtml(m.birthday || 'no birthday on file')}
         </div>
         <div class="member-actions">
+          <button class="${blocked ? 'approve-btn' : 'reject-btn'} toggle-block-btn" data-id="${d.id}">${blocked ? 'Unblock' : 'Block'}</button>
           <button class="reject-btn remove-member-btn" data-id="${d.id}">Remove</button>
         </div>
       </div>
     `;
   }).join('');
 
+  document.querySelectorAll('.toggle-block-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      const m = membersById[id];
+      const blocking = m.status !== 'Rejected';
+      const question = blocking
+        ? 'Block this member? They will be locked out of the app.'
+        : 'Unblock this member?';
+      if (!confirm(question)) return;
+
+      await updateDoc(doc(db, 'members', id), { status: blocking ? 'Rejected' : 'Active' });
+      if (blocking) {
+        await deleteDoc(doc(db, 'birthdays', id)).catch(() => {});
+      } else if (m.birthday) {
+        await setDoc(doc(db, 'birthdays', id), { name: m.name, md: m.birthday.slice(5) });
+      }
+      refreshAll();
+    });
+  });
+
   document.querySelectorAll('.remove-member-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       if (!confirm('Remove this member completely?')) return;
       await deleteDoc(doc(db, 'members', btn.dataset.id));
-      await deleteDoc(doc(db, 'birthdays', btn.dataset.id));
+      await deleteDoc(doc(db, 'birthdays', btn.dataset.id)).catch(() => {});
       refreshAll();
     });
   });
@@ -310,7 +269,6 @@ if (logoutLink) {
 }
 
 function refreshAll() {
-  loadPendingMembers();
   renderAllMembers();
   renderMemberChecklist();
 }

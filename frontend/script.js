@@ -30,19 +30,9 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
   statusMessage.textContent = 'Registering...';
 
+  let cred;
   try {
-    const cred = await createUserWithEmailAndPassword(auth, phoneToEmail(phone), password);
-
-    // The password is never saved in the database. Firebase keeps it safely.
-    await setDoc(doc(db, 'members', cred.user.uid), {
-      name: name,
-      phone: phone,
-      birthday: birthday,
-      status: 'Unpaid',
-      createdAt: serverTimestamp()
-    });
-
-    window.location.href = 'payment.html';
+    cred = await createUserWithEmailAndPassword(auth, phoneToEmail(phone), password);
   } catch (err) {
     console.error(err);
     if (err.code === 'auth/email-already-in-use') {
@@ -52,5 +42,31 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     } else {
       statusMessage.textContent = 'Something went wrong. Please try again.';
     }
+    return;
   }
+
+  try {
+    await setDoc(doc(db, 'members', cred.user.uid), {
+      name: name,
+      phone: phone,
+      birthday: birthday,
+      status: 'Active',
+      createdAt: serverTimestamp()
+    });
+  } catch (err) {
+    console.error(err);
+    // Undo the login so they can try again cleanly
+    await cred.user.delete().catch(() => {});
+    statusMessage.textContent = 'Something went wrong. Please try again.';
+    return;
+  }
+
+  // The birthday list everyone can see (name and month-day only)
+  try {
+    await setDoc(doc(db, 'birthdays', cred.user.uid), { name: name, md: birthday.slice(5) });
+  } catch (err) {
+    console.error(err);
+  }
+
+  window.location.href = 'home.html';
 });

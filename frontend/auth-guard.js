@@ -39,7 +39,7 @@ function waitForUser() {
 // Never finishes. Used after a redirect so the rest of the page stops running.
 const stopHere = () => new Promise(() => {});
 
-// For pages where the member only needs to be logged in (payment page).
+// For pages where the member only needs to be logged in.
 export async function requireSignedIn() {
   const user = await waitForUser();
   if (!user) {
@@ -49,8 +49,8 @@ export async function requireSignedIn() {
   return user;
 }
 
-// For the member pages. Returns the member's details only if they are
-// logged in, approved and paid up. Otherwise it sends them where they belong.
+// For the member pages. Returns the member's details if they are logged in
+// and their account is active. Otherwise it sends them to the login page.
 export async function requireActiveMember() {
   const user = await waitForUser();
   if (!user) {
@@ -69,28 +69,12 @@ export async function requireActiveMember() {
     throw err;
   }
 
-  if (!snap.exists()) {
-    await signOut(auth);
-    window.location.href = 'login.html';
-    return stopHere();
+  if (snap.exists() && snap.data().status === 'Active') {
+    return { id: user.uid, ...snap.data() };
   }
 
-  const member = { id: user.uid, ...snap.data() };
-  const paidUntil = member.paidUntil && member.paidUntil.toDate ? member.paidUntil.toDate() : null;
-
-  if (member.status === 'Active' && paidUntil && paidUntil > new Date()) {
-    return member;
-  }
-
-  if (member.status === 'Pending Approval') {
-    window.location.href = 'pending.html';
-  } else if (member.status === 'Rejected') {
-    await signOut(auth);
-    window.location.href = 'login.html';
-  } else {
-    // Unpaid, or their paid month has ended
-    window.location.href = 'payment.html';
-  }
+  await signOut(auth);
+  window.location.href = 'login.html';
   return stopHere();
 }
 
